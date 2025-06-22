@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon Site Stylé & RGPD</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="overlay">
+    <h1>Bienvenue sur mon site</h1>
+  </div>
+</header>
+
+<section class="content">
+  <h2>Notre univers visuel</h2>
+  <p>Galerie d'images nature. Ce site respecte votre vie privée.</p>
+  <div class="gallery">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Lac">
+    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80" alt="Route">
+    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80" alt="Plage">
+  </div>
+</section>
+
+<footer>
+  <p>
+    <a href="politique-confidentialite.html" target="_blank">Politique de confidentialité</a> •
+    <a href="#" onclick="resetConsent()">Modifier mes préférences cookies</a>
+  </p>
+</footer>
+
+<!-- Modal RGPD -->
+<div id="cookie-modal" class="modal show">
+  <div class="modal-box">
+    <h3>Gestion des cookies</h3>
+    <p>Ce site utilise des cookies pour améliorer votre expérience et mesurer l’audience.
+      <a href="politique-confidentialite.html" target="_blank">En savoir plus</a>.</p>
+    <label><input type="checkbox" disabled checked> Cookies nécessaires (obligatoires)</label><br>
+    <label><input type="checkbox" id="stats"> Cookies de statistiques</label><br>
+    <label><input type="checkbox" id="pubs"> Cookies marketing</label><br><br>
+    <div class="buttons">
+      <button onclick="acceptAll()">Tout accepter</button>
+      <button onclick="refuseAll()">Tout refuser</button>
+      <button onclick="savePrefs()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setConsent(value) {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() + 1);
+    document.cookie = "userConsent=" + value + "; expires=" + date.toUTCString() + "; path=/";
+  }
+
+  function getConsent() {
+    const cookies = document.cookie.split("; ");
+    for (let c of cookies) {
+      if (c.startsWith("userConsent=")) return c.split("=")[1];
+    }
+    return null;
+  }
+
+  function resetConsent() {
+    document.cookie = "userConsent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    location.reload();
+  }
+
+  function acceptAll() {
+    setConsent(encodeURIComponent(JSON.stringify({stats: true, pubs: true})));
+    closeModal();
+  }
+
+  function refuseAll() {
+    setConsent(encodeURIComponent(JSON.stringify({stats: false, pubs: false})));
+    closeModal();
+  }
+
+  function savePrefs() {
+    const stats = document.getElementById('stats').checked;
+    const pubs = document.getElementById('pubs').checked;
+    setConsent(encodeURIComponent(JSON.stringify({stats, pubs})));
+    closeModal();
+  }
+
+  function closeModal() {
+    document.getElementById('cookie-modal').classList.remove('show');
+  }
+
+  window.onload = () => {
+    if (getConsent()) {
+      closeModal();
+    }
+  }
+</script>
+
+</body>
+</html>
